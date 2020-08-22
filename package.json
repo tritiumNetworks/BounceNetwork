@@ -1,0 +1,14 @@
+{
+  "name": "BounceNetwork",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/tritiumNetworks/BounceNetwork.git",
+  "author": "pmh-only <pmhstudio.pmh@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bouncy": "^3.2.2",
+    "moment": "^2.27.0",
+    "uuid": "^8.3.0",
+    "yaml": "^1.10.0"
+  }
+}
