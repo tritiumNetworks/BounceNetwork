@@ -10,7 +10,7 @@ const { parse } = require('yaml')
 const bouncy = require('bouncy')
 const uuid = require('uuid').v4
 const s1 = bouncy(mtx)
-const s2 = bouncy({ cert: './cert/trinets-cert.pem', key: './cert/trinets-key.pem' }, mtx)
+const s2 = bouncy({ cert: readFileSync('./cert/trinets-cert.pem').toString('utf-8'), key: readFileSync('./cert/trinets-key.pem').toString('utf-8') }, mtx)
 
 s1.listen(80)
 s2.listen(443)
