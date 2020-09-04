@@ -6,14 +6,20 @@ if (!existsSync('./log/log-' + momunt().format('YYYY-MM-DD') + '.log')) writeFil
 // ---
 
 let settings
+
 const { parse } = require('yaml')
 const bouncy = require('bouncy')
 const uuid = require('uuid').v4
+
+getSetting()
+setInterval(getSetting, 1000)
+
 const s1 = bouncy(mtx)
-const s2 = bouncy({ cert: readFileSync('./cert/trinets-cert.pem').toString('utf-8'), key: readFileSync('./cert/trinets-key.pem').toString('utf-8') }, mtx)
+let s2
+if (settings.ssl) s2 = bouncy({ cert: readFileSync('./cert/cert.pem').toString('utf-8'), key: readFileSync('./cert/key.pem').toString('utf-8') }, mtx)
 
 s1.listen(80)
-s2.listen(443)
+if (s2) s2.listen(443)
 
 // ---
 
@@ -54,9 +60,6 @@ function mtx (req, res, bounce) {
 }
 
 // ---
-
-getSetting()
-setInterval(getSetting, 1000)
 
 function getSetting () {
   const raw = readFileSync('./settings.yaml', 'utf-8')
