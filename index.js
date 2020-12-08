@@ -1,7 +1,7 @@
 const { readFileSync, appendFileSync, mkdirSync, writeFileSync, existsSync } = require('fs')
-const momunt = require('moment')
+const moment = require('moment')
 if (!existsSync('./log')) mkdirSync('./log')
-if (!existsSync('./log/log-' + momunt().format('YYYY-MM-DD') + '.log')) writeFileSync('./log/log-' + momunt().format('YYYY-MM-DD') + '.log', '')
+if (!existsSync('./log/log-' + moment().format('YYYY-MM-DD') + '.log')) writeFileSync('./log/log-' + moment().format('YYYY-MM-DD') + '.log', '')
 
 // ---
 
@@ -14,9 +14,11 @@ const uuid = require('uuid').v4
 getSetting()
 setInterval(getSetting, 1000)
 
+const gpio = settings.gpio ? require('gpio') : { DIRECTION: { OUT: 0 }, export: () => ({ set: () => {} }) }
+const pin2 = gpio.export(27, { direction: gpio.DIRECTION.OUT })
+
 const s1 = bouncy(mtx)
-let s2
-if (settings.ssl) s2 = bouncy({ cert: readFileSync('./cert/cert.pem').toString('utf-8'), key: readFileSync('./cert/key.pem').toString('utf-8') }, mtx)
+const s2 = settings.ssl ? bouncy({ cert: readFileSync('./cert/cert.pem').toString('utf-8'), key: readFileSync('./cert/key.pem').toString('utf-8') }, mtx) : null
 
 s1.listen(80)
 if (s2) s2.listen(443)
@@ -24,6 +26,9 @@ if (s2) s2.listen(443)
 // ---
 
 function mtx (req, res, bounce) {
+  pin2.set()
+  setTimeout(() => pin2.set(0), 100)
+
   const code = uuid().slice(0, 10)
 
   const ip =
@@ -71,5 +76,5 @@ function getSetting () {
 // ---
 function log (str) {
   console.log(str)
-  appendFileSync('./log/log-' + momunt().format('YYYY-MM-DD') + '.log', str + '\n')
+  appendFileSync('./log/log-' + moment().format('YYYY-MM-DD') + '.log', str + '\n')
 }
